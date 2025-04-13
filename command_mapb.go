@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func commandMapBack(config *Config) error {
+func commandMapBack(config *Config, args ...string) error {
 	locationArea, err := config.pokeapiClient.ListLocations(config.prevLocationsURL)
 	if err != nil {
 		fmt.Println(err)

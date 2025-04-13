@@ -7,47 +7,45 @@ import (
 	"net/http"
 )
 
-func (c *Client) ListLocations(pageURL *string) (RespShallowLocations, error) {
-	url := baseURL + "/location-area"
-	if pageURL != nil {
-		strPageURL := *pageURL
-		if strPageURL != "" {
-			url = strPageURL
-		}
-
+func (c *Client) LocationByName(name string) (RespDeepLocations, error) {
+	if name == "" {
+		return RespDeepLocations{}, nil
 	}
+
+	url := fmt.Sprintf("%s/location-area/%s", baseURL, name)
 
 	var data []byte
 	// check the cache
 	data, ok := c.cache.Get(url)
 
 	if !ok {
+		fmt.Println("fetching fresh data")
 		// cache entry does not exist; fetch data
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
-			return RespShallowLocations{}, fmt.Errorf("error GET %s : %w", url, err)
+			return RespDeepLocations{}, fmt.Errorf("error GET %s : %w", url, err)
 		}
 
 		resp, err := c.httpClient.Do(req)
 		if err != nil {
-			return RespShallowLocations{}, err
+			return RespDeepLocations{}, err
 		}
 
 		defer resp.Body.Close()
 
 		data, err = io.ReadAll(resp.Body)
 		if err != nil {
-			return RespShallowLocations{}, err
+			return RespDeepLocations{}, err
 		}
 
 		c.cache.Add(url, data)
 	}
 
-	locationsResp := RespShallowLocations{}
+	locationsResp := RespDeepLocations{}
 
 	err := json.Unmarshal(data, &locationsResp)
 	if err != nil {
-		return RespShallowLocations{}, err
+		return RespDeepLocations{}, err
 	}
 
 	return locationsResp, nil
