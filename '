@@ -14,7 +14,6 @@ type Config struct {
 
 func startRepl() {
 	scanner := bufio.NewScanner(os.Stdin)
-	config := Config{}
 	for {
 		fmt.Print("Pokedex > ")
 		scanner.Scan()
@@ -30,6 +29,7 @@ func startRepl() {
 
 		commandWord := input[0]
 		command, exists := getCommands()[commandWord]
+		config := Config{}
 
 		if exists {
 			err := command.callback(&config)
@@ -52,7 +52,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*Config) error
+	callback    func(*config) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -71,11 +71,6 @@ func getCommands() map[string]cliCommand {
 			name:        "map",
 			description: "Displays the names of the next 20 location areas in the Pokemon world",
 			callback:    commandMap,
-		},
-		"mapb": {
-			name:        "mapb",
-			description: "Displays the names of the PREVIOUS 20 location areas in the Pokemon world",
-			callback:    commandMapBack,
 		},
 	}
 }
