@@ -19,7 +19,6 @@ func (c *Client) LocationByName(name string) (RespDeepLocations, error) {
 	data, ok := c.cache.Get(url)
 
 	if !ok {
-		fmt.Println("fetching fresh data")
 		// cache entry does not exist; fetch data
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
