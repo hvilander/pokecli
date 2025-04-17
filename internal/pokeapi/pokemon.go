@@ -33,6 +33,15 @@ func (c *Client) PokemonByName(name string) (Pokemon, error) {
 
 		defer resp.Body.Close()
 
+		if resp.StatusCode != http.StatusOK {
+			if resp.StatusCode == 404 {
+				return Pokemon{}, fmt.Errorf("Pokemon not found, check your spelling")
+			}
+
+			return Pokemon{}, fmt.Errorf("Issue fetching pokemon")
+
+		}
+
 		data, err = io.ReadAll(resp.Body)
 		if err != nil {
 			return Pokemon{}, err
