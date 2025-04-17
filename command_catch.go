@@ -31,6 +31,7 @@ func command_catch(config *Config, args ...string) error {
 
 		// print caught message
 		fmt.Println(pokemon.Name + " was caught!")
+		fmt.Println("You may now inpsect it with the inpsect command.")
 
 	} else {
 		fmt.Println(pokemon.Name + " escaped!")
